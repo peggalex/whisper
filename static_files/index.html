@@ -1,0 +1,1375 @@
+﻿<DOCTYPE html>
+
+<head>
+	<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@200&display=swap" rel="stylesheet">
+	<style>
+		body{ background-color: cornsilk; }
+
+		body, input, button {
+			font-family: 'Public Sans', sans-serif;
+		}
+
+		body *{
+			transition: background-color 1s, opacity 1s, color 1s;
+		}
+
+		.loginLike {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.loginLike h1 {
+			color: grey;
+			padding: 15px;
+		}
+
+		.loginLike input {
+			background-color: cornsilk !important;
+		    -webkit-appearance: none;
+		    border: none;
+		    border-bottom: solid;
+		    border-width: thin;
+		    border-color: lightskyblue;
+		    color: grey;
+		    width: 10em;
+		    outline: none;
+		    font-size: 1em;
+		}
+		
+		.loginLike *{
+			margin: 0.5em;
+			height: 4vh;
+			text-align: center;
+		}
+
+		.loginLike button {
+			width: 7.5em;
+		    background-color: lightskyblue;
+		    border-radius: 0.5em;
+		    color: cornsilk;
+		    border: none;
+		    font-size: 1em;
+		}
+
+		p.date{
+			font-size: 0.5em;
+		}
+
+		div.message.to p.date{
+			color: black;
+			opacity: 0.4;
+		}
+
+		div.message.from p.date{
+			color: cornsilk;
+			opacity: 0.75;
+		}
+
+		div.message{
+			display: flex;
+			flex-direction: column;
+			margin: 10px;
+			scroll-snap-align: end;
+		}
+
+		div.message.from{
+			border-radius: 10px 10px 0 10px;
+			align-items: flex-end;
+		}
+
+		div.message.from > .messageSubContainer{
+			border-radius: 10px 10px 0 10px;
+		}
+
+		div.message.to > .messageSubContainer{
+			border-radius: 10px 10px 10px 0;
+		}	
+		div.message.to{
+			align-items: flex-start;
+		}
+
+		div.message.from p{
+			text-align: right;
+		}
+
+		div.message.to > .messageSubContainer{
+			background-color: gainsboro;
+		}
+
+		div.message.from > .messageSubContainer{
+			background-color: lightskyblue;
+		}
+
+		div.messageSubContainer {
+		    /*border: solid;*/
+		    border-width: thin;
+		    padding: 10px;
+		}
+
+		div.messagesContainer{
+			overflow: auto;
+		    height: 80vh;
+		    scroll-snap-type: y mandatory;
+		}
+
+		div.messageSubContainer p{
+			margin: 0px;
+		}
+
+		.textBar{
+			display: flex;
+			flex-direction: row;
+			height: 2em;
+			padding-top: 10px;
+		}
+
+		.textBar > button{
+			width: 5em;
+			border-radius: 0 20px 20px 0;
+			outline: none;
+		}
+
+		#friendRequestSearch{
+			padding: 10px;
+			background-color: powderblue;
+		}
+
+		.textBar input{
+			width: 100%;
+			border-radius: 20px 0 0 20px;
+			outline: none;
+			padding-left: 10px;
+		}
+
+		div.messengerHeader{
+		    display: flex;
+		    height: 10vh;
+		    background-color: powderblue;
+			align-items: center;
+		}
+
+		button.backButton{
+		    width: 10vh;
+		    font-size: 36px;
+		    color: cornsilk;
+		    border: 0;
+		    background-color: lightskyblue;
+		    outline: none;
+		    height: 100%;
+		}
+
+		h2.username{
+			padding-left: 10px;
+			color: cornsilk;
+			margin-right: 0.5em;
+		}
+
+		.friendPreview{
+			display: flex;
+			height: 10vh;
+			align-items: center;
+			flex-direction: row;
+			background-color: powderblue;
+			color: cornsilk;
+			padding-left: 10px;
+		}
+
+		.friendPreview *{ 
+			pointer-events: none !important;
+    		user-select: none;
+			margin: 0px; 
+		}
+
+		/*.lastMessage{
+			width: 100%;
+			text-align: right;
+		}*/
+
+		.lastMessage, .lastMessageTime{
+			color: cornsilk;
+			font-size:0.7em;
+		}
+
+
+		button:hover, .friendPreview:hover, #topbar > div:hover, .user:hover{
+			cursor: pointer;
+		}
+
+		.backButton:hover{
+			background-color: powderblue;
+		}
+
+		.friendPreview:hover, .user:hover, #friendRequestSearch:hover{
+			background-color: deepskyblue;
+		}
+
+		#topbar{
+			display: flex;
+			flex-direction: row;
+			background-color: lightskyblue;
+		}
+
+		#topbar > div{
+			padding: 20px;
+			margin: 0;
+			background-color: lightskyblue;
+			height: auto;
+			display: flex;
+   			align-items: center;
+		}
+
+		#topbar svg {
+			margin-right: 10px !important;
+		}
+
+		#topbar > div > * {
+			margin: 0px;
+			color: cornsilk;
+		}
+
+		#topbar > div:hover{
+		    color: lightskyblue;
+		    background-color: aliceblue;
+		}
+
+		svg.icon {
+			height: 2em;
+			margin-left: 0.5em;
+			color: cornsilk;
+		}
+
+		svg.original { display: none; }
+
+		div.user {
+			background-color: powderblue;
+			display: flex;
+			align-items: center;
+			padding: 10px; 
+			color: cornsilk;
+		}
+
+		.user h3 {
+		    margin: 0px;
+		    margin-left: 1em;
+		}
+
+		.user > div {
+			display: flex;
+		    flex-direction: column;
+		    align-items: center;
+		    color: cornsilk;
+		}
+
+		.user > div > p {
+			margin: 5px;
+		    margin-bottom: 0px;
+		}
+
+		.onlineOffline {
+			height: 0.5em;
+		    width: 0.5em;
+		    border-radius: 0.5em;
+		    margin-right: 0.5em;
+		    border: solid;
+		    border-width: thin;
+		    border-color: cornsilk;
+		}
+
+		.onlineOffline.online {
+			background-color: lime;
+		}
+
+		.onlineOffline.offline {
+			background-color: grey;
+		}
+
+		button {
+		    outline: none;
+		}
+
+
+		@media only screen and (orientation: portrait) {
+			
+			/*body, input, button { font-size: 2rem; }
+			
+			.loginLike > h1 {
+				padding: 5%;
+				margin: 5%;
+				font-size: 5rem;
+			}
+			
+			.loginLike > *{
+				height: 8vh;
+				width: 20rem;
+			}*/
+		}
+
+
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+	<script src="lib/react.js"></script>
+	<script src="lib/react-dom.js"></script>
+	<script src="lib/babel.min.js"></script>
+</head>
+
+<body>
+	<div id='root'></div>
+
+<script>
+	if (crypto.subtle === undefined){
+		alert('Your browser does not support crypto.subtle on insecure contexts (http). Sorry. Try Safari?');
+	}
+	alertError = (data,_,error) => {
+		let errorMsg = data.responseJSON['error'];
+		alert(`${error}: ${errorMsg}`);
+		return errorMsg;
+	};
+
+	async function waitForAjaxCall(method, url){
+		url = url.replace(/[ \t\n]/g, ''); // get rid of empty spaces and newlines
+
+		return new Promise((resolve, reject) => $.ajax({
+		    	method: method,
+		    	url: url
+		    })
+		    .done(resolve)
+		    .fail((data,_,error) => reject(alertError(data,_,error)))
+		);
+	}
+
+	// examples on MDN make a new object each time,
+	// I don't see why you can't reuse the same one
+	const enc = new TextEncoder(),
+		dec = new TextDecoder();
+
+
+	class CryptoStuff {
+		//https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto
+
+		static async generate_dh_keypair(){
+			return window.crypto.subtle.generateKey(
+				{
+			      name: "ECDH",
+			      namedCurve: "P-384"
+			    },
+			    true,
+			    ["deriveKey"]
+			);
+		}
+
+		static async get_dh_shared_key(myPrivateKey, theirPublicKey){
+			return window.crypto.subtle.deriveKey(
+			    {
+			      name: "ECDH",
+			      public: theirPublicKey
+			    },
+			    myPrivateKey,
+			    {
+			    	name: "AES-GCM",
+			    	length: 256
+			    },
+			    true,
+			    ["encrypt", "decrypt"]
+			);
+		}
+
+		static async encrypt(decryptedMsg, key, iv){
+			// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt
+			// https://github.com/mdn/dom-examples/blob/master/web-crypto/derive-key/ecdh.js
+
+			let msg = enc.encode(decryptedMsg),
+				encryptedMsgBuffer = await window.crypto.subtle.encrypt(
+				    {
+			          name: "AES-GCM",
+			          iv: iv
+			        },
+				    key,
+				    msg
+			    ),
+			    encryptedMsg = CryptoStuff.arrayBufferToHex(encryptedMsgBuffer);
+			return encryptedMsg
+		}
+
+		static async decrypt(encryptedMsg, key, iv){
+			// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt
+			// https://github.com/mdn/dom-examples/blob/master/web-crypto/derive-key/ecdh.js
+			
+			try {
+				let encryptedMsgBuffer = CryptoStuff.hexToArrayBuffer(encryptedMsg),
+					decrypted = await window.crypto.subtle.decrypt(
+				        {
+				          name: "AES-GCM",
+				          iv: iv
+				        },
+				        key,
+				        encryptedMsgBuffer
+			        );
+		        return dec.decode(decrypted);
+
+		    } catch (e) {
+		    	alert('Error: decryption error.');
+		    }
+		}
+
+		static async hash(toHash){
+			// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+			let hashEnc = enc.encode(toHash),                        				  
+				hashBuffer = await crypto.subtle.digest('SHA-512', hashEnc),
+				keyHex = CryptoStuff.arrayBufferToHex(hashBuffer);
+
+			return keyHex;
+		}
+
+		static arrayBufferToHex(arrayBuffer){
+			let intArray = new Uint8Array(arrayBuffer),
+				hashArray = Array.from(intArray),
+				hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+			return hashHex;
+		}
+
+		static hexToArrayBuffer(hex){
+			let array = []; 
+			for (let i=0; i<hex.length; i+=2){
+				let hexNum = hex.substring(i,i+2),
+					decimal = parseInt(hexNum, 16);
+
+				array.push(decimal);
+			}
+			let buffer = new Uint8Array(array).buffer;
+
+			return buffer;
+		}
+
+	  static async exportPrivateKey(key){
+	     let keyBuffer = await window.crypto.subtle.exportKey(
+	        "pkcs8",
+	        key
+	      ),
+	      keyHex = CryptoStuff.arrayBufferToHex(keyBuffer);
+
+	    return keyHex;
+	  }
+
+		static async exportPublicKey(key){
+			let keyBuffer = await window.crypto.subtle.exportKey(
+				    "raw",
+				    key
+				),
+				keyHex = CryptoStuff.arrayBufferToHex(keyBuffer);
+
+			return keyHex;
+		}
+
+		static async importPublicKey_dh(keyHex){
+			let keyBuff = CryptoStuff.hexToArrayBuffer(keyHex);
+
+			let key =  window.crypto.subtle.importKey(
+			    "raw",
+			    keyBuff,
+			    {
+			    	name: "ECDH",
+			    	namedCurve: "P-384"
+			    },
+			    true,
+			    []
+			);
+			return key;
+		}
+
+	  static async importPrivateKey_dh(keyHex){
+			let keyBuff = CryptoStuff.hexToArrayBuffer(keyHex);
+
+			let key =  window.crypto.subtle.importKey(
+			    "pkcs8",
+			    keyBuff,
+			    {
+			    	name: "ECDH",
+			    	namedCurve: "P-384"
+			    },
+			    true,
+			    ["deriveKey"]
+			);
+			return key;  
+	  }
+
+	  static async importKey_aes_gcm(keyHex){
+			let keyBuff = CryptoStuff.hexToArrayBuffer(keyHex);
+
+			let key =  window.crypto.subtle.importKey(
+			    "raw",
+			    keyBuff,
+			    {
+			    	name: "AES-GCM"
+			    },
+			    true,
+			    []
+			);
+			return key;
+		}
+
+		static async generate_iv(){
+			return window.crypto.getRandomValues(new Uint8Array(12));
+		}
+
+		static async rawStringToKey(str){
+			let strEnc = enc.encode(str);
+		  
+			let keyDigest = await window.crypto.subtle.digest(
+		    	{name: 'SHA-256'},
+		    	strEnc
+		    );
+
+		    let key = await window.crypto.subtle.importKey(
+			    'raw',
+			    keyDigest,
+			    {name: "AES-GCM"},
+			    true,
+			    ['encrypt', 'decrypt']
+		    );
+		    return key;
+		}
+	}
+
+	class UserCreator{
+
+		static async sendUserToServer(username, passwordHash, publicKey, privateKeyEncrypted, encryption_iv){
+		    try {
+		    	await waitForAjaxCall('PUT', `
+		       		/register/${username}
+		       		/passwordHash/${passwordHash}
+		       		/publicKey/${publicKey}
+		       		/privateKeyEncrypted/${privateKeyEncrypted}
+		       		/encryption_iv/${encryption_iv}
+		    	`);
+		    	alert(`user: '${username}' created successfully!`);
+		    } catch (e) {
+		    	console.log('Server error:', e);
+		    }
+		}
+
+		static async makeUser(username, password){
+			let myPasswordHashed = await CryptoStuff.hash(password);
+
+			let myKeyPair = await CryptoStuff.generate_dh_keypair(),
+				myPrivateKey = myKeyPair.privateKey,
+				myPublicKey = myKeyPair.publicKey;
+			// messages will be sent diffie-hellman
+			// no one can decrypt messages sent to you without your private key
+
+			let myPrivateKeyStr = await CryptoStuff.exportPrivateKey(myPrivateKey),
+				myPublicKeyStr = await CryptoStuff.exportPublicKey(myPublicKey);
+
+			let myKey = await CryptoStuff.rawStringToKey(password),
+				iv = await CryptoStuff.generate_iv();
+			// myKey is an encryption key made from your password
+			// encryption is aes-gcm, so we need an iv. 
+
+			let ivStr = CryptoStuff.arrayBufferToHex(iv);
+			// The iv can be public: "...so the IV usually does not need to be secret." ~ Wikipedia
+
+			let myPrivateKeyEncrypted = await CryptoStuff.encrypt(myPrivateKeyStr, myKey, iv);
+			// encrypt the private key with myKey
+			// => no one can decrypt messages sent to you without your password
+
+			// the server doesn't know your password, as it only ever authenticates a hash of it
+			UserCreator.sendUserToServer(username, 
+				myPasswordHashed, 
+				myPublicKeyStr, 
+				myPrivateKeyEncrypted, 
+				ivStr
+			);
+		}
+	}
+</script>
+
+<script type="text/babel">
+
+class Icons{
+	static user = <svg id='user' aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" className="icon svg-inline--fa fa-user fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"></path></svg>
+	static userPlus = <svg id='user-plus' aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user-plus" className="icon svg-inline--fa fa-user-plus fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M624 208h-64v-64c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v64h-64c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h64v64c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-64h64c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm-400 48c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"></path></svg>;
+	static userFriends = <svg id='user-friends' aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user-friends" className="icon svg-inline--fa fa-user-friends fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M192 256c61.9 0 112-50.1 112-112S253.9 32 192 32 80 82.1 80 144s50.1 112 112 112zm76.8 32h-8.3c-20.8 10-43.9 16-68.5 16s-47.6-6-68.5-16h-8.3C51.6 288 0 339.6 0 403.2V432c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48v-28.8c0-63.6-51.6-115.2-115.2-115.2zM480 256c53 0 96-43 96-96s-43-96-96-96-96 43-96 96 43 96 96 96zm48 32h-3.8c-13.9 4.8-28.6 8-44.2 8s-30.3-3.2-44.2-8H432c-20.4 0-39.2 5.9-55.7 15.4 24.4 26.3 39.7 61.2 39.7 99.8v38.4c0 2.2-.5 4.3-.6 6.4H592c26.5 0 48-21.5 48-48 0-61.9-50.1-112-112-112z"></path></svg>;
+	static userClock = <svg  id='user-clock' aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user-clock" className="icon svg-inline--fa fa-user-clock fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M496 224c-79.6 0-144 64.4-144 144s64.4 144 144 144 144-64.4 144-144-64.4-144-144-144zm64 150.3c0 5.3-4.4 9.7-9.7 9.7h-60.6c-5.3 0-9.7-4.4-9.7-9.7v-76.6c0-5.3 4.4-9.7 9.7-9.7h12.6c5.3 0 9.7 4.4 9.7 9.7V352h38.3c5.3 0 9.7 4.4 9.7 9.7v12.6zM320 368c0-27.8 6.7-54.1 18.2-77.5-8-1.5-16.2-2.5-24.6-2.5h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h347.1c-45.3-31.9-75.1-84.5-75.1-144zm-96-112c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128z"></path></svg>;
+	static userCheck = <svg id='user-check' aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user-check" className="icon svg-inline--fa fa-user-check fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4zm323-128.4l-27.8-28.1c-4.6-4.7-12.1-4.7-16.8-.1l-104.8 104-45.5-45.8c-4.6-4.7-12.1-4.7-16.8-.1l-28.1 27.9c-4.7 4.6-4.7 12.1-.1 16.8l81.7 82.3c4.6 4.7 12.1 4.7 16.8.1l141.3-140.2c4.6-4.7 4.7-12.2.1-16.8z"></path></svg>;
+	static messenger = <svg id='messenger' aria-hidden="true" focusable="false" data-prefix="fas" data-icon="comment-dots" className="icon svg-inline--fa fa-comment-dots fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M256 32C114.6 32 0 125.1 0 240c0 49.6 21.4 95 57 130.7C44.5 421.1 2.7 466 2.2 466.5c-2.2 2.3-2.8 5.7-1.5 8.7S4.8 480 8 480c66.3 0 116-31.8 140.6-51.4 32.7 12.3 69 19.4 107.4 19.4 141.4 0 256-93.1 256-208S397.4 32 256 32zM128 272c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm128 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm128 0c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32z"></path></svg>;
+	static contact = <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="address-book" className="icon svg-inline--fa fa-address-book fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M436 160c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20V48c0-26.5-21.5-48-48-48H48C21.5 0 0 21.5 0 48v416c0 26.5 21.5 48 48 48h320c26.5 0 48-21.5 48-48v-48h20c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20v-64h20c6.6 0 12-5.4 12-12v-40c0-6.6-5.4-12-12-12h-20v-64h20zm-68 304H48V48h320v416zM208 256c35.3 0 64-28.7 64-64s-28.7-64-64-64-64 28.7-64 64 28.7 64 64 64zm-89.6 128h179.2c12.4 0 22.4-8.6 22.4-19.2v-19.2c0-31.8-30.1-57.6-67.2-57.6-10.8 0-18.7 8-44.8 8-26.9 0-33.4-8-44.8-8-37.1 0-67.2 25.8-67.2 57.6v19.2c0 10.6 10 19.2 22.4 19.2z"></path></svg>;
+	static logout = <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sign-out-alt" className="icon svg-inline--fa fa-sign-out-alt fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z"></path></svg>
+}
+
+var TextBar = (props) => (
+	<div id={props.id} className='textBar'>
+		<input name='textBarInput' onChange={props.typingHandler}/>
+		<button onClick={props.clickHandler}>
+			{props.submitName}
+		</button>
+	</div>
+);
+
+class SuperHideableComponent extends React.Component {
+	/* 
+	This abstract class handles the lifted state of HideableComponents.
+	Override render() by returning HideableComponents.
+	The HideableComponents can set state by passing the `show` function.
+	*/
+	constructor(props){
+		/* expects props.initialShowing(str)*/
+		super(props);
+		this.state = {showing: props.initialShowing};
+	}
+
+	show = (name) => {
+		this.setState({showing: name});
+		console.log(this.state);
+	}
+
+	render(props){
+		throw Error('Unimplemented method.');
+	}
+}
+
+
+class HideableComponent extends React.Component{
+	/*
+	This abstract class handles components that may be hidden.
+	Override getHTML() by returning the desired html elements. 
+	render() will show the html iff the SuperHideableComponent's state.showing = this.name.
+	*/
+	constructor(props){
+		/* expects props.name(str), props.showing(str), props.show(function)*/
+		super(props);
+		this.name = props.name;
+		this.show = props.show; // optional parameter if you want to set state
+	}
+
+	getHTML = () => { 
+		throw Error('Unimplemented method.'); 
+	}
+
+	render(props){
+		// Render the html iff the SuperHideableComponent
+		//  wants to show this component.
+		return (this.props.showing == this.name) ? this.getHTML() : null;
+	}
+}
+
+
+class LoginComponent extends HideableComponent{
+
+	constructor(props){
+		super(props);
+
+	}
+
+	submitLogin = (e) => {
+		e.preventDefault();
+
+		let username = e.target.username.value;
+		let password = e.target.password.value;
+
+		this.props.attemptLogin(username, password);
+
+		return false;
+	}
+
+	getHTML = () => (
+		<form  autoComplete="new-password" onSubmit={this.submitLogin} id='login' className='loginLike' method='post'>
+			<h1>Login</h1>
+			<input type='text' name='username' placeholder='username' pattern='[0-9A-Za-z]+' required/>
+			<input autoComplete="new-password" type='password' name='password' placeholder='password' pattern='[0-9A-Za-z]+' required/>
+			<button id='submitLogin'>login</button>
+			<button id='loginToRegister' onClick={()=>this.show('register')} type='button'>register</button>
+		</form>
+	);
+}
+
+
+class RegisterComponent extends HideableComponent{
+
+	register = (e) => {
+		e.preventDefault();
+
+		let username = e.target.username.value,
+			password = e.target.password.value,
+			password2 = e.target.password2.value;
+
+		if (password != password2){
+			alert('Error: passwords dissimilar.');
+			e.target.password2.value = '';
+			return;
+		}
+		UserCreator.makeUser(
+			username,
+			password
+		);
+
+		e.target.reset();
+
+		return false;
+
+	}
+
+	getHTML = () => (
+		<form  autoComplete="off" id='register' className='loginLike' method='post' onSubmit={this.register}>
+			<h1>Register</h1>
+			<button id='registerToLogin' type="button" onClick={()=>this.show('login')}>back to login</button>
+			<input type='text' name='username' placeholder='username' pattern='[0-9A-Za-z]+' required/>
+			<input type='password' name='password' placeholder='password' pattern='[0-9A-Za-z]+' required/>
+			<input type='password' name='password2' placeholder='confirm password' pattern='[0-9A-Za-z]+' required/>
+			<button id='submitRegister'>register</button>
+		</form>
+	);
+}
+
+class HomeContainerComponent extends HideableComponent{
+
+	logout = () => this.show('login');
+
+	getHTML = () => (
+		<div id='homeContainer'>
+			<HomeComponent 
+				initialShowing={'friendsList'}
+				logout={this.logout}
+				name={'home'} 
+				show={this.show} 
+				showing={this.props.showing} 
+				username={this.props.username}
+				passwordHash={this.props.passwordHash}
+				privateKey={this.props.privateKey}
+			/>
+		</div>
+	);
+}
+
+class Message {
+	constructor(msg, timestamp){
+		this.msg = msg;
+		this.timestamp = timestamp;
+	}
+}
+
+class MessageTo extends Message {}
+class MessageFrom extends Message {}
+
+class Friend{
+
+	constructor(username, sharedKey, online = false){
+		this.username = username;
+		this.sharedKey = sharedKey;
+		this.messages = [];
+		this.online = online;
+	}
+
+	async sendMessage(sender, passwordHash, messageDecrypted, messageSocket){
+		let iv = await CryptoStuff.generate_iv();
+		let ivStr = CryptoStuff.arrayBufferToHex(iv);
+		let messageEncrypted = await CryptoStuff.encrypt(
+			messageDecrypted, 
+			this.sharedKey, 
+			iv
+		);
+		messageSocket.send(JSON.stringify({
+			sender: sender,
+			passwordHash: passwordHash,
+			recipient: this.username,
+			messageEncrypted: messageEncrypted,
+			encryption_iv: ivStr
+		}));
+	}
+
+	async decryptMessage(messageEncrypted, ivStr){
+		let iv = CryptoStuff.hexToArrayBuffer(ivStr);
+		let messageDecrypted = await CryptoStuff.decrypt(
+			messageEncrypted, 
+			this.sharedKey, 
+			iv
+		);
+		return messageDecrypted	
+	}
+
+	async receiveMessage(isSender, messageEncrypted, ivStr, timestamp){
+		let messageDecrypted = await this.decryptMessage(messageEncrypted, ivStr);
+		let messageClass = (isSender) ? MessageTo : MessageFrom;
+		let newMessage = new messageClass(messageDecrypted, timestamp);
+		this.messages.push(newMessage);
+	}
+
+	getLastMessage(){
+		return (this.messages) ? this.messages[this.messages.length-1] : undefined;
+	}
+}
+
+/* expects props.online(Boolean) */
+class OnlineNode extends React.Component{
+	render(props){
+		let onlineOfflineClass = (this.props.online) ? 'online' : 'offline';
+		return <div className={'onlineOffline ' + onlineOfflineClass}></div>
+	}
+}
+
+class FriendsList extends HideableComponent {
+
+	getHTML = () => {
+		let lst = [];
+		for (let username in this.props.friends){
+			let friend = this.props.friends[username];
+			let lastMessage = friend.getLastMessage();
+			let online = friend.online;
+
+			let friendPreview = (
+				<div 
+					key={friend.username} 
+					className={'friendPreview'}
+					onClick={()=>this.show(`${username}Messenger`)}
+				>
+					<div>
+						<OnlineNode online={friend.online}/>
+					</div>
+					<div>
+						<h3>{friend.username}</h3>
+						<p className='lastMessage'>{(lastMessage) ? lastMessage.msg : ''}</p>
+						<p className='lastMessageTime'>{(lastMessage) ? formatTime(lastMessage.timestamp) : ''}</p>
+					</div>
+				</div>
+			);
+			lst.push(friendPreview);
+		}
+		return (
+			<div id='friendsList'>
+				{lst}
+			</div>
+		);
+	}
+}
+
+class User {
+	constructor(username, areFriends, hasFriendRequest, isRequester){
+		this.username = username;
+		this.update(areFriends, hasFriendRequest, isRequester);
+	}
+
+	update(areFriends, hasFriendRequest, isRequester){
+		this.areFriends = areFriends;
+		this.hasFriendRequest = hasFriendRequest;
+		this.isRequester = isRequester;
+	}
+}
+
+class FindComponent extends HideableComponent{
+
+	constructor(props){
+		super(props);
+		this.state = {
+			search: ''
+		};
+	}
+
+	static getFriendIcon(areFriends, hasFriendRequest, isRequester){
+		if (areFriends) return userFriends;
+		if (!hasFriendRequest) return userPlus;
+		if (isRequester) return userClock;
+		return userCheck;
+	}
+
+	handleSearch = (e) => this.setState({search: e.target.value});
+
+	getHTML = () => {
+		let users = [];
+		let regex = new RegExp(`^${this.state.search}`);
+		for (let username in this.props.users){
+			if (!username.match(regex)) continue;
+			let user = this.props.users[username];
+			let clickable, icon, subtext;
+			switch (true){
+				case Boolean(user.areFriends):
+					icon = Icons.userFriends;
+					subtext = 'friends';
+					clickable = false;
+					break;
+				case !user.hasFriendRequest:
+					icon = Icons.userPlus;
+					subtext = 'request';
+					clickable = true;
+					break;
+				case Boolean(user.isRequester):
+					icon = Icons.userCheck;
+					subtext = 'accept';
+					clickable = true;
+					break;
+				default:
+					icon = Icons.userClock;
+					subtext = 'waiting';
+					clickable = false;
+			}
+			let clickHandler = (clickable) ? ()=>this.props.sendFriendRequest(username) : ()=>{};
+
+			users.push(
+				<div key={username} onClick={clickHandler} className='user'>
+					<div>
+						{icon}
+						<p>{subtext}</p>
+					</div>
+					<h3>{username}</h3>
+				</div>
+			);
+		}
+
+		return (
+			<div id='findContainer'>
+				<TextBar 
+					id={'friendRequestSearch'}
+					submitName={'search'} 
+					clickHandler={()=>{}} 
+					typingHandler={this.handleSearch}
+				/>
+				{users}
+			</div>
+		);
+	}
+}
+
+
+function messageStrToJSON(messageStr){
+	let message = JSON.parse(messageStr);
+	if (message.error != null){
+		throw new Error(message.error);
+	}
+	return message;
+}
+
+function formatTime(timestamp){
+	let date = new Date(timestamp),
+		dateStrFull = date.toDateString(),
+		dayMonth = dateStrFull.substring(0, dateStrFull.length-5),
+		hour = (date.getHours()==12) ? 12 : date.getHours()%12 ,
+		minutes = `${date.getMinutes()}`.padStart(2, '0'),
+		amPm = (date.getHours() < 12) ? 'am' : 'pm';
+	
+	return `${dayMonth}, ${hour}:${minutes} ${amPm}`;
+}
+
+class Messenger extends HideableComponent{
+		
+	constructor(props){
+		super(props);
+		this.friend = props.friend;
+		this.username = props.friend.username;
+	}
+
+	submitMessage = (e) => {
+		e.preventDefault();
+
+		this.props.sendMessage(this.friend, e.target.textBarInput.value);
+		e.target.reset();
+
+		return false;
+	}
+
+	scrollToBottom(){
+		// thanks to https://stackoverflow.com/questions/270612/scroll-to-bottom-of-div
+		let friendMessages = document.getElementById(`${this.username}_messages`);
+		if (!friendMessages) return;
+		friendMessages.scrollTop = friendMessages.scrollHeight;		
+	}
+
+	componentDidMount(){
+		this.scrollToBottom();
+	}
+
+	componentDidUpdate(){
+		this.scrollToBottom();
+	}
+
+	getHTML = () => {
+		let messages = [];
+		for (let message of this.friend.messages){
+			let messageClass = (message instanceof MessageFrom) ? 'from' : 'to';
+			messages.push((
+				<div key={message.timestamp} className={`message ${messageClass}`}>
+			 		<div className='messageSubContainer'>
+				 		<p className='actualMessage'>{message.msg}</p>
+				 		<p className='date'>{formatTime(message.timestamp)}</p>
+			 		</div>
+			 	</div>
+			));
+		}
+		return (
+			<form id={`${this.username}_messenger`} onSubmit={this.submitMessage} method='post'>
+				<div className="messengerHeader">
+					<button 
+						className='backButton' 
+						type='button' 
+						onClick={()=>this.show('friendsList')}
+					>☰</button>
+					<h2 className='username'>{this.username}</h2>
+					<OnlineNode online={this.friend.online}/>
+				</div>
+				<div 
+					id={`${this.username}_messages`}
+					className='messagesContainer' 
+				>
+					{messages}
+				</div>
+				<TextBar 
+					id={'sendMessageContainer'}
+					submitName={'send'} 
+					clickHandler={()=>{}} 
+					typingHandler={()=>{}}
+				/>
+			</form>
+		);
+    }
+}
+
+class HomeComponent extends SuperHideableComponent{
+
+	constructor(props){
+		super(props);
+		this.username = props.username;
+		this.password = props.password;
+		this.passwordHash = props.passwordHash;
+		this.privateKey = props.privateKey;
+
+		this.state.users = {};
+		this.state.friends = {};
+	}
+
+	async componentDidMount(){
+		this.createSockets();
+	}
+
+	friendFactory = async (username, publicKeyStr, online)=>{
+		let publicKey = await CryptoStuff.importPublicKey_dh(publicKeyStr);
+		let sharedKey = await CryptoStuff.get_dh_shared_key(
+			this.privateKey, 
+			publicKey
+		);
+		return new Friend(username, sharedKey, online);
+	}
+
+	sendFriendRequest = (recipient) => {
+		this.friendRequestSocket.send(JSON.stringify({
+			sender: this.username,
+			passwordHash: this.passwordHash,
+			recipient: recipient
+		}));
+	}
+
+	sendMessage = async (friend, message) => {
+		friend.sendMessage(
+			this.username, 
+			this.passwordHash, 
+			message, 
+			this.messageSocket
+		);
+	}
+
+	receiveMessage = async (sender, recipient, messageEncrypted, encryption_ivStr, timestamp) => {
+    	let isSender = (sender!=this.username);
+    	let friendUsername = (isSender) ? sender : recipient;
+
+    	await this.state.friends[friendUsername].receiveMessage(
+    		isSender, 
+    		messageEncrypted,
+    		encryption_ivStr, 
+    		timestamp
+    	);
+    	this.forceUpdate();
+	}
+
+	setOnline = (username, online) => {
+		this.state.friends[username].online = online;
+		this.forceUpdate();
+	}
+
+	createSocket = (port) => {
+		let url = location.hostname;
+		return new WebSocket(
+			`ws://${url}:${port}/?username=${this.username}&passwordHash=${this.passwordHash}`
+		);		
+	}
+
+	createFriendSocket = () => {
+		let friendPort = parseInt(location.port)+2;
+		this.friendSocket = this.createSocket(friendPort);
+		// TODO: change to wss
+
+		this.friendSocket.onopen = (event) => {
+            console.log("Connected to friend websocket.");
+    	};
+
+    	let myUsername = this.username,
+  			friends = this.state.friends,
+  			setState = this.setState.bind(this);
+
+	    this.friendSocket.onmessage = async (event) => {
+	    	let {friend, publicKey, connected} = messageStrToJSON(event.data);
+
+	    	let newFriend = await this.friendFactory(
+	    		friend,
+	    		publicKey,
+	    		connected
+	    	);
+
+	    	friends[friend] = newFriend;
+	    	setState({friends: friends});
+	    	console.log('received friend:', username);
+	    }
+	}
+
+	createMessageSocket = () => {
+		let messagePort = parseInt(location.port)+1;
+		this.messageSocket = this.createSocket(messagePort);
+		// TODO: change to wss
+
+		this.messageSocket.onopen = (event) => {
+            console.log("Connected to message websocket.");
+    	};
+
+	    this.messageSocket.onmessage = async (event) => {
+	    	let message = messageStrToJSON(event.data);
+	    	console.log('received message:', message);
+	    	this.receiveMessage(
+	    		message.sender,
+	    		message.recipient,
+	    		message.messageEncrypted,
+	    		message.encryption_iv,
+	    	 	message.timestamp
+	    	);
+	    }
+
+	}
+
+	createFriendRequestSocket = () => {
+		let friendRequestPort = parseInt(location.port)+3;
+		this.friendRequestSocket = this.createSocket(friendRequestPort);
+		// TODO: change to wss
+
+		this.friendRequestSocket.onopen = (event) => {
+            console.log("Connected to friend request websocket.");
+    	};
+
+    	let users = this.state.users,
+		 	setState = this.setState.bind(this);
+
+	    this.friendRequestSocket.onmessage = (event) => {
+	    	let message = messageStrToJSON(event.data)
+	    	//console.log('received friend request:', message);
+	    	let username = message.username,
+	    		areFriends = message.areFriends,
+	    		hasFriendRequest = message.hasFriendRequest,
+	    		isRequester = message.isRequester;
+ 
+ 			let user = users[username];
+
+ 			if (user){
+ 				user.update(
+ 					areFriends,
+	    			hasFriendRequest,
+	    			isRequester
+ 				);
+ 			} else {
+ 				users[username] = new User(
+ 					username,
+ 					areFriends,
+	    			hasFriendRequest,
+	    			isRequester
+ 				);
+ 			}
+	    	setState({users: users});
+	    }
+	}
+
+	createOnlineSocket = () => {
+		let onlinePort = parseInt(location.port)+4;
+		this.onlineSocket = this.createSocket(onlinePort);
+		// TODO: change to wss
+
+		this.onlineSocket.onopen = (event) => {
+            console.log("Connected to online websocket.");
+    	};
+    	let friends = this.friends;
+	    this.onlineSocket.onmessage = async (event) => {
+	    	let message = messageStrToJSON(event.data);
+	    	//console.log('received online/offline message:', message);
+	    	let {username, connected} = message;
+	    	this.setOnline(username, connected);
+	    }
+
+	}
+
+	createSockets = async () => {
+
+		let getFriends = await waitForAjaxCall(
+			'GET',
+			`/getFriends/${this.username}/passwordHash/${this.passwordHash}`
+		);
+		for (let friend of getFriends){
+			let newFriend = await this.friendFactory(
+				friend.username,
+				friend.publicKey,
+				friend.connected
+			);
+			this.state.friends[friend.username] = newFriend;
+			let messages = await waitForAjaxCall(
+				'GET',
+				`/getMessages/${this.username}
+				/passwordHash/${this.passwordHash}
+				/friend/${friend.username}`
+			);
+			for (let message of messages){
+				this.receiveMessage(
+					message.sender,
+		    		message.recipient,
+		    		message.messageEncrypted,
+		    		message.encryption_iv,
+		    	 	message.timestamp
+		    	 );
+			}
+		}
+		this.forceUpdate();
+
+		this.createFriendSocket();
+		this.createMessageSocket();
+		this.createFriendRequestSocket();
+		this.createOnlineSocket();
+	}
+
+	logout = () => {
+		let webSockets = [
+			this.friendSocket,
+			this.messageSocket,
+			this.friendRequestSocket,
+			this.onlineSocket
+		];
+		webSockets.forEach((ws)=>ws.close());
+		this.props.logout();
+	}
+
+	render(props){
+		let messengers = [];
+		for (let username in this.state.friends){
+			let friend = this.state.friends[username];
+			messengers.push(
+				<Messenger 
+					name={`${username}Messenger`}
+					key={`${username}Messenger`}
+					showing={this.state.showing}
+					show={this.show}
+					friend={friend}
+					sendMessage={this.sendMessage}
+				/>
+			);
+		}
+		let topbar = null;
+		if (['friendsList', 'findContainer'].includes(this.state.showing)){
+			topbar = (
+				<div id='topbar'>
+					<div onClick={()=>this.show('friendsList')}>
+						{Icons.messenger}
+						<h1 id='friends'>Friends</h1>
+					</div>
+					<div onClick={()=>this.show('findContainer')}>
+						{Icons.contact}
+						<h1 id='find'>Find</h1>
+					</div>
+					<div onClick={this.logout}>
+						{Icons.logout}
+						<h1>Logout</h1>
+					</div>
+				</div>
+			);
+		}
+		return (
+			<div id='home'>
+				{topbar}
+				<FriendsList 
+					name={'friendsList'} 
+					showing={this.state.showing} 
+					show={this.show}
+					friends={this.state.friends}
+				/>
+				<FindComponent 
+					name={'findContainer'} 
+					showing={this.state.showing} 
+					users={this.state.users} 
+					sendFriendRequest={this.sendFriendRequest}
+				/>
+				{messengers}
+			</div>
+		);	
+	}
+}
+
+class BodyComponent extends SuperHideableComponent {
+
+	attemptLogin = async (username, password) => {
+		try {
+			let passwordHash = await CryptoStuff.hash(password);
+
+			let userObj = JSON.parse(await waitForAjaxCall(
+				'GET', 
+				`login/${username}/passwordHash/${passwordHash}`
+			));
+
+			await this.login(
+				username, 
+				password, 
+				userObj.privateKeyEncrypted, 
+				userObj.encryption_iv
+			);
+
+			this.show('home');
+		} catch (e) {
+			console.log('Server error:', e);
+		}
+	}
+
+	login = async (username, password, privateKeyEncrypted, encryption_iv) => {
+		this.username = username;
+		this.passwordHash = await CryptoStuff.hash(password);
+
+		let key = await CryptoStuff.rawStringToKey(password);
+		let iv = CryptoStuff.hexToArrayBuffer(encryption_iv);
+		let privateKeyStr = await CryptoStuff.decrypt(privateKeyEncrypted, key, iv);
+		this.privateKey = await CryptoStuff.importPrivateKey_dh(privateKeyStr);
+	}
+
+
+	render(props){
+		return (
+			<div>
+				<LoginComponent 
+					name={'login'} 
+					show={this.show} 
+					showing={this.state.showing} 
+					attemptLogin={this.attemptLogin}
+				/>
+				<RegisterComponent 
+					name={'register'} 
+					show={this.show} 
+					showing={this.state.showing}
+				/>
+				<HomeContainerComponent
+					name={'home'} 
+					show={this.show} 
+					showing={this.state.showing} 
+					username={this.username}
+					passwordHash={this.passwordHash}
+					privateKey={this.privateKey}
+					socket={this.socket}
+				/>
+			</div>
+		);
+	}
+}
+ReactDOM.render( <BodyComponent initialShowing={'login'}/>, document.getElementById("root"));
+
+</script>
+
+</body>
+
+
+</html>
+
+

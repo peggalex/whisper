@@ -1,0 +1,91 @@
+
+<!DOCTYPE html>
+
+<head>
+	<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@200&display=swap" rel="stylesheet">
+	<style>
+		body, input, button {
+			font-family: 'Public Sans', sans-serif;
+		}
+
+		#login > h1 {
+			padding: 15px;
+			border-bottom: solid;
+			border-bottom-width: 0.5px;
+		}
+
+		#login {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		
+		#login > *{
+			margin: 0.5%;
+			height: 4vh;
+			width: 10vw;
+			text-align: center;
+		}
+
+		@media only screen and (orientation: portrait) {
+			
+			body, input, button { font-size: 2rem; }
+			
+			#login > h1 {
+				padding: 5%;
+				margin: 5%;
+				font-size: 5rem;
+			}
+			
+			#login > *{
+				height: 8vh;
+				width: 20rem;
+			}
+		}
+	</style>
+	<script src="jquery-3.4.1.min.js"></script>
+</head>
+
+<body>
+	<div id='loginContainer'>
+		<form id='login' method='post'>
+			<h1>Login</h1>
+			<input id='user' type='text' name='user' placeholder='username' required/>
+			<input id='pass' type='password' name='pass' placeholder='password' required/>
+			<button id='submitButt'>login</button>
+		</form>
+	</div>
+
+	<script>
+		function beginConvo(){
+			window.socket = new WebSocket(`ws://${location.hostname}:${parseInt(location.port)+2}`);
+			socket.onopen = function (event) {
+		            console.log("connected to websocket");
+		            socket.send(username);
+		    };
+		    socket.onclose = function (event) {
+		        //pass
+		    };
+
+		    socket.onmessage = function (event) {
+		        window.stage = JSON.parse(event.data);
+		        if (stage.actors[username] !== undefined) drawMap(stage);
+		        //console.log(event.data);
+		    }
+		}
+		function startTalking(){
+	        $.ajax({
+	           method: "GET",
+	           url: `/all/${username}/pass/${password}`
+	        })
+	        .done((data) => resolve(data['colour']))
+	        .fail((data,_,error) => resolve(alertError(data,_,error)));
+
+		}
+	</script>
+</body>
+
+
+</html>
+
+

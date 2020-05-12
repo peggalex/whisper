@@ -1,0 +1,1032 @@
+
+<!DOCTYPE html>
+
+<head>
+	<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@200&display=swap" rel="stylesheet">
+	<style>
+		body{ background-color: cornsilk; }
+
+		body, input, button {
+			font-family: 'Public Sans', sans-serif;
+		}
+
+		body *{
+			transition: background-color 1s, opacity 1s, color 1s;
+		}
+
+		.loginLike > h1 {
+			padding: 15px;
+			border-bottom: solid;
+			border-bottom-width: 0.5px;
+		}
+
+		.loginLike {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+		
+		.loginLike > *{
+			margin: 0.5%;
+			height: 4vh;
+			width: 10vw;
+			text-align: center;
+		}
+
+		body > *:not(.show) {
+			display:none !important;
+		}
+
+		#homeContainer > *:not(.showInner):not(#topbar){
+			display: none;
+		}
+
+		p.date{
+			font-size: 0.5em;
+		}
+
+		div.message.to p.date{
+			color: black;
+			opacity: 0.4;
+		}
+
+		div.message.from p.date{
+			color: white;
+			opacity: 0.75;
+		}
+
+		div.message{
+			display: flex;
+			flex-direction: column;
+			margin: 10px;
+			scroll-snap-align: end;
+		}
+
+		div.message.from{
+			border-radius: 10px 10px 0 10px;
+			align-items: flex-end;
+		}
+
+		div.message.from > .messageSubContainer{
+			border-radius: 10px 10px 0 10px;
+		}
+
+		div.message.to > .messageSubContainer{
+			border-radius: 10px 10px 10px 0;
+		}	
+		div.message.to{
+			align-items: flex-start;
+		}
+
+		div.message.from p{
+			text-align: right;
+		}
+
+		div.message.to > .messageSubContainer{
+			background-color: gainsboro;
+		}
+
+		div.message.from > .messageSubContainer{
+			background-color: lightskyblue;
+		}
+
+		div.messageSubContainer {
+		    /*border: solid;*/
+		    border-width: thin;
+		    padding: 10px;
+		}
+
+		div.messagesContainer{
+			overflow: auto;
+		    height: 80vh;
+		    scroll-snap-type: y mandatory;
+		}
+
+		div.messageSubContainer p{
+			margin: 0px;
+		}
+
+		.textBar{
+			display: flex;
+			flex-direction: row;
+			height: 5vh;
+			padding-top: 10px;
+		}
+
+		.textBar > button{
+			width: 7.5em;
+			border-radius: 0 20px 20px 0;
+			outline: none;
+		}
+
+		#friendRequestSearch{
+			padding: 10px;
+			background-color: powderblue;
+		}
+
+		input[name='message'], input[name='search']{
+			width: 100%;
+			border-radius: 20px 0 0 20px;
+			outline: none;
+			padding-left: 10px;
+		}
+
+		div.messengerHeader{
+		    display: flex;
+		    height: 10vh;
+		    background-color: powderblue;
+		}
+
+		button.backButton{
+		    width: 10vh;
+		    font-size: 36px;
+		    color: cornsilk;
+		    border: 0;
+		    background-color: lightskyblue;
+		    outline: none;
+		}
+
+		h2.username{
+			padding-left: 10px;
+			color: cornsilk;
+		}
+
+		.friendPreview{
+			display: flex;
+			height: 10vh;
+			justify-content: center;
+			flex-direction: column;
+			background-color: powderblue;
+			color: cornsilk;
+			padding-left: 10px;
+		}
+
+		.friendPreview > *{ 
+			pointer-events: none !important;
+    		user-select: none;
+			margin: 0px; 
+		}
+
+		/*.lastMessage{
+			width: 100%;
+			text-align: right;
+		}*/
+
+		.lastMessage, .lastMessageTime{
+			color: cornsilk;
+			font-size:0.7em;
+		}
+
+
+		button:hover, .friendPreview:hover, #topbar > h1:hover, .friendRequest:hover{
+			cursor: pointer;
+		}
+
+		.backButton:hover{
+			background-color: powderblue;
+		}
+
+		.friendPreview:hover, .friendRequest:hover{
+			background-color: lightskyblue;
+		}
+
+		#topbar{
+			display: flex;
+			flex-direction: row;
+			background-color: lightskyblue;
+		}
+
+		#topbar > h1{
+			padding: 20px;
+			margin: 0;
+			background-color: lightskyblue;
+			color: cornsilk;
+			height: 100%;
+		}
+
+		#topbar > h1:hover{
+		    color: lightskyblue;
+		    background-color: aliceblue;
+		}
+
+		svg.icon {
+			width: min(5vw, 5vh);
+			margin-left: min(1vw, 1vh);
+		}
+
+		svg.original { display: none; }
+
+		div.friendRequest {
+			background-color: powderblue;
+			display: flex;
+			align-items: center;
+			padding: 10px; 
+			color: cornsilk;
+		}
+
+		.friendRequest > p {
+			font-size: 2em;
+		}
+
+		.friendRequest > h3 {
+		    margin: 0px;
+		}
+
+		.friendRequestButton {
+			display: flex;
+		    flex-direction: column;
+		    align-items: center;
+		    width: 10vw;
+		    color: cornsilk;
+		}
+
+		.friendRequestButton > p {
+			margin: 5px;
+		}
+
+
+		@media only screen and (orientation: portrait) {
+			
+			/*body, input, button { font-size: 2rem; }
+			
+			.loginLike > h1 {
+				padding: 5%;
+				margin: 5%;
+				font-size: 5rem;
+			}
+			
+			.loginLike > *{
+				height: 8vh;
+				width: 20rem;
+			}*/
+		}
+
+
+	</style>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+
+<body>
+	<div id='loginContainer'>
+		<form id='login' class='loginLike' method='post'>
+			<h1>Login</h1>
+			<input id='username' type='text' name='username' placeholder='username' pattern='[0-9A-Za-z]+' required/>
+			<input id='password' type='password' name='password' placeholder='password' pattern='[0-9A-Za-z]+'' required/>
+			<button id='submitLogin'>login</button>
+			<button id='loginToRegister' type="button">register</button>
+		</form>
+	</div>
+	<div id='registerContainer'>
+		<form id='register' class='loginLike' method='post'>
+			<h1>Register</h1>
+			<button id='registerToLogin' type="button">back to login</button>
+			<input type='text' name='username' placeholder='username' pattern='[0-9A-Za-z]+' required/>
+			<input type='password' name='password' placeholder='password' pattern='[0-9A-Za-z]+' required/>
+			<input type='password' name='password2' placeholder='confirm password' pattern='[0-9A-Za-z]+' required/>
+			<button id='submitRegister'>login</button>
+		</form>
+	</div>	
+	<div id='homeContainer'>
+		<svg class='friendRequestIcon'>
+			<use xlink:href="./icons/user.svg"></use>
+		</svg>
+		<div id='topbar'>
+			<h1 id='friends'>Friends</h1>
+			<h1 id='find'>Find</h1>
+			<h1 id='requests'>Requests</h1>
+		</div>
+		<div id='friendsList' class='showInner'></div>
+		<div id='findContainer'>
+			<div id='friendRequestSearch' class='textBar'>
+				<input name='search'>
+				<button>search</button>
+			</div>
+		</div>
+		<div id='requestsContainer'></div>
+	</div>
+	<div id='messagesContainer'></div>
+	<svg id='user' class='icon original' aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user" class="svg-inline--fa fa-user fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"></path></svg>
+	<svg id='user-plus' class='icon original' aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user-plus" class="svg-inline--fa fa-user-plus fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M624 208h-64v-64c0-8.8-7.2-16-16-16h-32c-8.8 0-16 7.2-16 16v64h-64c-8.8 0-16 7.2-16 16v32c0 8.8 7.2 16 16 16h64v64c0 8.8 7.2 16 16 16h32c8.8 0 16-7.2 16-16v-64h64c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zm-400 48c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4z"></path></svg>
+	<svg id='user-friends' class='icon original' aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user-friends" class="svg-inline--fa fa-user-friends fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M192 256c61.9 0 112-50.1 112-112S253.9 32 192 32 80 82.1 80 144s50.1 112 112 112zm76.8 32h-8.3c-20.8 10-43.9 16-68.5 16s-47.6-6-68.5-16h-8.3C51.6 288 0 339.6 0 403.2V432c0 26.5 21.5 48 48 48h288c26.5 0 48-21.5 48-48v-28.8c0-63.6-51.6-115.2-115.2-115.2zM480 256c53 0 96-43 96-96s-43-96-96-96-96 43-96 96 43 96 96 96zm48 32h-3.8c-13.9 4.8-28.6 8-44.2 8s-30.3-3.2-44.2-8H432c-20.4 0-39.2 5.9-55.7 15.4 24.4 26.3 39.7 61.2 39.7 99.8v38.4c0 2.2-.5 4.3-.6 6.4H592c26.5 0 48-21.5 48-48 0-61.9-50.1-112-112-112z"></path></svg>
+	<svg  id='user-clock' class='icon original' aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user-clock" class="svg-inline--fa fa-user-clock fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M496 224c-79.6 0-144 64.4-144 144s64.4 144 144 144 144-64.4 144-144-64.4-144-144-144zm64 150.3c0 5.3-4.4 9.7-9.7 9.7h-60.6c-5.3 0-9.7-4.4-9.7-9.7v-76.6c0-5.3 4.4-9.7 9.7-9.7h12.6c5.3 0 9.7 4.4 9.7 9.7V352h38.3c5.3 0 9.7 4.4 9.7 9.7v12.6zM320 368c0-27.8 6.7-54.1 18.2-77.5-8-1.5-16.2-2.5-24.6-2.5h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h347.1c-45.3-31.9-75.1-84.5-75.1-144zm-96-112c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128z"></path></svg>
+	<svg id='user-check' class='icon original' aria-hidden="true" focusable="false" data-prefix="fas" data-icon="user-check" class="svg-inline--fa fa-user-check fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M224 256c70.7 0 128-57.3 128-128S294.7 0 224 0 96 57.3 96 128s57.3 128 128 128zm89.6 32h-16.7c-22.2 10.2-46.9 16-72.9 16s-50.6-5.8-72.9-16h-16.7C60.2 288 0 348.2 0 422.4V464c0 26.5 21.5 48 48 48h352c26.5 0 48-21.5 48-48v-41.6c0-74.2-60.2-134.4-134.4-134.4zm323-128.4l-27.8-28.1c-4.6-4.7-12.1-4.7-16.8-.1l-104.8 104-45.5-45.8c-4.6-4.7-12.1-4.7-16.8-.1l-28.1 27.9c-4.7 4.6-4.7 12.1-.1 16.8l81.7 82.3c4.6 4.7 12.1 4.7 16.8.1l141.3-140.2c4.6-4.7 4.7-12.2.1-16.8z"></path></svg>
+
+<script>
+	$('#loginContainer').addClass('show');
+	$('#friendsList').addClass('showInner');
+
+	function showContainer(elementId){
+		$('.show').removeClass('show');
+		$(`#${elementId}`).addClass('show');
+	}
+
+	function showInnerContainer(elementId){
+		$('.showInner').removeClass('showInner');
+		$(`#${elementId}`).addClass('showInner');
+	}
+
+	$('#loginToRegister').on('click', () => showContainer('registerContainer'));
+	$('#registerToLogin').on('click', () => showContainer('loginContainer'));
+	$('#find').on('click', () => showInnerContainer('findContainer'));
+	$('#friends').on('click', () => showInnerContainer('friendsList'));
+	$('#requests').on('click', () => showInnerContainer('requestsContainer'));
+
+	$('msgBox').on('submit', (e) => {
+		e.preventDefault();
+
+	    $.ajax({
+	    	method: "PUT",
+	    	url: `
+	       		/newUser/${username}
+	       		/passwordHash/${passwordHash}
+	       		/publicKey/${publicKey}
+	       		/privateKeyEncrypted/${privateKeyEncrypted}
+	       		/privateKey_iv/${privateKey_iv}
+	    	`
+	    });
+
+		return false;
+	});
+
+	alertError = (data,_,error) => {
+		let errorMsg = data.responseJSON['error'];
+		alert(`${error}: ${errorMsg}`);
+		return errorMsg;
+	};
+
+	async function waitForAjaxCall(method, url){
+		url = url.replace(/[ \t\n]/g, ''); // get rid of empty spaces and newlines
+
+		return new Promise((resolve, reject) => $.ajax({
+		    	method: method,
+		    	url: url
+		    })
+		    .done(resolve)
+		    .fail((data,_,error) => reject(alertError(data,_,error)))
+		);
+	}
+
+</script>
+
+<script>
+var socket,
+	secureMessageHandler;
+
+// examples on MDN make a new object each time,
+// I don't see why you can't reuse the same one
+const enc = new TextEncoder(),
+	dec = new TextDecoder();
+
+
+class CryptoStuff {
+	//https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto
+
+	static async generate_dh_keypair(){
+		return window.crypto.subtle.generateKey(
+			{
+		      name: "ECDH",
+		      namedCurve: "P-384"
+		    },
+		    true,
+		    ["deriveKey"]
+		);
+	}
+
+	static async get_dh_shared_key(myPrivateKey, theirPublicKey){
+		return window.crypto.subtle.deriveKey(
+		    {
+		      name: "ECDH",
+		      public: theirPublicKey
+		    },
+		    myPrivateKey,
+		    {
+		    	name: "AES-GCM",
+		    	length: 256
+		    },
+		    true,
+		    ["encrypt", "decrypt"]
+		);
+	}
+
+	static async encrypt(decryptedMsg, key, iv){
+		// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt
+		// https://github.com/mdn/dom-examples/blob/master/web-crypto/derive-key/ecdh.js
+
+		let msg = enc.encode(decryptedMsg),
+			encryptedMsgBuffer = await window.crypto.subtle.encrypt(
+			    {
+		          name: "AES-GCM",
+		          iv: iv
+		        },
+			    key,
+			    msg
+		    ),
+		    encryptedMsg = CryptoStuff.arrayBufferToHex(encryptedMsgBuffer);
+		return encryptedMsg
+	}
+
+	static async decrypt(encryptedMsg, key, iv){
+		// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt
+		// https://github.com/mdn/dom-examples/blob/master/web-crypto/derive-key/ecdh.js
+		
+		try {
+			let encryptedMsgBuffer = CryptoStuff.hexToArrayBuffer(encryptedMsg),
+				decrypted = await window.crypto.subtle.decrypt(
+			        {
+			          name: "AES-GCM",
+			          iv: iv
+			        },
+			        key,
+			        encryptedMsgBuffer
+		        );
+	        return dec.decode(decrypted);
+
+	    } catch (e) {
+	    	alert('Error: decryption error.');
+	    }
+	}
+
+	static async hash(toHash){
+		// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+		let hashEnc = enc.encode(toHash),                        				  
+			hashBuffer = await crypto.subtle.digest('SHA-256', hashEnc),
+			keyHex = CryptoStuff.arrayBufferToHex(hashBuffer);
+
+		return keyHex;
+	}
+
+	static arrayBufferToHex(arrayBuffer){
+		let intArray = new Uint8Array(arrayBuffer),
+			hashArray = Array.from(intArray),
+			hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+		return hashHex;
+	}
+
+	static hexToArrayBuffer(hex){
+		let array = []; 
+		for (let i=0; i<hex.length; i+=2){
+			let hexNum = hex.substring(i,i+2),
+				decimal = parseInt(hexNum, 16);
+
+			array.push(decimal);
+		}
+		let buffer = new Uint8Array(array).buffer;
+
+		return buffer;
+	}
+
+  static async exportPrivateKey(key){
+     let keyBuffer = await window.crypto.subtle.exportKey(
+        "pkcs8",
+        key
+      ),
+      keyHex = CryptoStuff.arrayBufferToHex(keyBuffer);
+
+    return keyHex;
+  }
+
+	static async exportPublicKey(key){
+		let keyBuffer = await window.crypto.subtle.exportKey(
+			    "raw",
+			    key
+			),
+			keyHex = CryptoStuff.arrayBufferToHex(keyBuffer);
+
+		return keyHex;
+	}
+
+	static async importPublicKey_dh(keyHex){
+		let keyBuff = CryptoStuff.hexToArrayBuffer(keyHex);
+
+		let key =  window.crypto.subtle.importKey(
+		    "raw",
+		    keyBuff,
+		    {
+		    	name: "ECDH",
+		    	namedCurve: "P-384"
+		    },
+		    true,
+		    []
+		);
+		return key;
+	}
+
+  static async importPrivateKey_dh(keyHex){
+		let keyBuff = CryptoStuff.hexToArrayBuffer(keyHex);
+
+		let key =  window.crypto.subtle.importKey(
+		    "pkcs8",
+		    keyBuff,
+		    {
+		    	name: "ECDH",
+		    	namedCurve: "P-384"
+		    },
+		    true,
+		    ["deriveKey"]
+		);
+		return key;  
+  }
+
+  static async importKey_aes_gcm(keyHex){
+		let keyBuff = CryptoStuff.hexToArrayBuffer(keyHex);
+
+		let key =  window.crypto.subtle.importKey(
+		    "raw",
+		    keyBuff,
+		    {
+		    	name: "AES-GCM"
+		    },
+		    true,
+		    []
+		);
+		return key;
+	}
+
+	static async generate_iv(){
+		return window.crypto.getRandomValues(new Uint8Array(12));
+	}
+
+	static async rawStringToKey(str){
+		let strEnc = enc.encode(str);
+	  
+		let keyDigest = await window.crypto.subtle.digest(
+	    	{name: 'SHA-256'},
+	    	strEnc
+	    );
+
+	    let key = await window.crypto.subtle.importKey(
+		    'raw',
+		    keyDigest,
+		    {name: "AES-GCM"},
+		    true,
+		    ['encrypt', 'decrypt']
+	    );
+	    return key;
+	}
+}
+
+var USER;
+
+messageToStr = (sender, passwordHash, recipient, messageEncrypted, encryption_iv) => {
+	return JSON.stringify({
+		sender: sender,
+		passwordHash: passwordHash,
+		recipient: recipient,
+		messageEncrypted: messageEncrypted,
+		encryption_iv: encryption_iv
+	})
+}
+
+function messageStrToJSON(messageStr){
+	let message = JSON.parse(messageStr);
+	if (message.error != null){
+		throw new Error(message.error);
+	}
+	return message;
+}
+
+function importSvg(name, css){
+	let svg = document.createElement('object');
+	svg.setAttribute('data', name);
+	document.querySelector('body').appendChild(svg);
+ 
+	svg.onload = () => svg.setAttribute('style',css);
+	return svg;
+}
+
+function formatTime(timestamp){
+	date = new Date(timestamp),
+	dateStrFull = date.toDateString(),
+	dayMonth = dateStrFull.substring(0, dateStrFull.length-5),
+	hour = (date.getHours()==12) ? 12 : date.getHours()%12 ,
+	minutes = `${date.getMinutes()}`.padStart(2, '0'),
+	amPm = (date.getHours() < 12) ? 'am' : 'pm';
+	
+	return `${dayMonth}, ${hour}:${minutes} ${amPm}`;
+}
+
+class User {
+	constructor(username, password, privateKeyEncrypted, encryption_iv){
+		this.setup(username, password, privateKeyEncrypted, encryption_iv);
+		// differ to helper function because crypto library returns promises
+		// and no await in constructor
+	}
+
+	async setup(username, password, privateKeyEncrypted, encryption_iv){
+
+		this.username = username;
+		this.password = password;
+		this.passwordHash = await CryptoStuff.hash(password);
+		
+		this.createSocket(username, this.passwordHash);
+
+		let myKey = await User.getMyKey(password),
+			iv = CryptoStuff.hexToArrayBuffer(encryption_iv),
+			privateKeyStr = await CryptoStuff.decrypt(privateKeyEncrypted, myKey, iv);
+
+		this.privateKey = await CryptoStuff.importPrivateKey_dh(privateKeyStr);
+		this.friends = new Set();
+		this.sharedKeys = {};
+		this.lazyLoadedMessagers = new Set();
+		await this.setupConversations();
+		this.setupFriends();
+	}
+
+	async setupFriends(){
+		let users = await waitForAjaxCall(
+			"GET",
+			`/searchUsers/${this.username}
+			/passwordHash/${this.passwordHash}
+			/search/`
+		);
+
+		for (let user of users){
+			let iconName,
+				text,
+				name = user.username
+			switch (true){
+				case Boolean(user.areFriends):
+					iconName = 'user-friends';
+					text = 'friends';
+					break;
+				case (!Boolean(user.hasFriendRequest)):
+					iconName = 'user-plus';
+					text = 'add';
+					break;
+				case Boolean(user.isRequester):
+					iconName = 'user-check';
+					text = 'accept';
+					break;
+				default:
+					iconName = 'user-clock';
+					text = 'waiting';
+					break;
+			}
+			$('#findContainer').append($(`<div id='${name}_friendRequest' class='friendRequest'></div>`));
+			$(`#${name}_friendRequest`).append(
+				$(`<div id='${name}_friendRequestButton' class='friendRequestButton'></div>`)
+			);
+			$(`#${name}_friendRequest`).append($(`#${name}_friendRequestButton`));
+			let iconElement = $(`#${iconName}.original`).clone();
+			iconElement.removeClass('original');
+			$(`#${name}_friendRequest`).append(`<h3>${user.username}</h3>`);
+			$(`#${name}_friendRequestButton`).append(iconElement);
+			$(`#${name}_friendRequestButton`).append($(`<p>${text}</p>`));
+
+		}
+
+	}
+
+	scrollToBottom(username){
+		// precond: user initiated;
+		// thanks to https://stackoverflow.com/questions/270612/scroll-to-bottom-of-div
+		let friendMessages = document.getElementById(`${username}_messages`);
+		friendMessages.scrollTop = friendMessages.scrollHeight;
+
+	}
+
+	createSocket(){
+		let url = location.hostname,
+			port = parseInt(location.port)+1;
+
+		this.socket = new WebSocket(
+			`ws://${url}:${port}/?username=${this.username}&passwordHash=${this.passwordHash}`
+		);
+		// TODO: change to wss
+
+		this.socket.onopen = (event) => {
+            console.log("Connected to websocket.");
+    	};
+
+	    this.socket.onmessage = (event) => {
+	    	let message = messageStrToJSON(event.data)
+	    	console.log('received message:', message);
+    		this.receiveMessage(
+    			message.sender,
+    			message.recipient,
+    			message.messageEncrypted,
+    			message.encryption_iv,
+    			message.timestamp
+    		);
+	    }
+	}
+
+	async getMessages(friend){
+		let messages;
+	    try {
+			messages = await waitForAjaxCall(
+				"GET", 
+				`/getMessages/${this.username}
+	    		/passwordHash/${this.passwordHash}
+	    		/friend/${friend}`
+	    	);
+		} catch (e) {
+			messages = [];
+		}
+		return messages;
+	}
+
+	async lazyLoadMessenger(username, publicKey){
+
+		if (this.lazyLoadedMessagers.has(username)) {
+			return $(`#${username}_messenger`);
+		}
+		this.lazyLoadedMessagers.add(username);
+    	// add messenger interface
+    	let friendMessenger = $(`<form id='${username}_messenger'></form>`),
+    		messengerHeader = $('<div class="messengerHeader"></div>');
+    	$("body").append(friendMessenger);
+    	friendMessenger.append(messengerHeader);
+    	// add a back button
+	    let backButton = $("<button class='backButton' type='button'>☰</button>");
+	    messengerHeader.append(backButton);
+
+	    backButton.on("click", () => showContainer('homeContainer'));
+    	// add title
+    	messengerHeader.append($(`<h2 class='username'>${username}</h2>`));
+    	// add previous messages
+    	let friendMessages = $(`<div id='${username}_messages' class='messagesContainer'></div>`);
+    	friendMessenger.append(friendMessages);
+    	let messages = await this.getMessages(username);
+    	for (let message of messages){
+    		this.receiveMessage(
+    			message.sender,
+    			message.recipient,
+    			message.messageEncrypted,
+    			message.encryption_iv,
+    			message.timestamp
+    		);
+    	}
+    	// add space for writing text and sending
+    	let sendMessageContainer = $('<div class="sendMessageContainer textBar"></div>'),
+    		messageInput = $('<input name="message" required></input>')
+    	friendMessenger.append(sendMessageContainer);
+    	sendMessageContainer.append(messageInput);
+
+    	let sendButton = $('<button class="sendButton">send</button>');
+    	friendMessenger.on('submit', (e) => {
+    		e.preventDefault();
+    		let msg = messageInput.val();
+    		messageInput.val('');
+
+    		this.sendMessage(username, publicKey, msg);
+    		return false;
+    	});
+    	sendMessageContainer.append(sendButton);
+    	return friendMessenger;
+	}
+
+	async loadSharedKey(username, publicKeyStr){
+
+		let publicKey = await CryptoStuff.importPublicKey_dh(publicKeyStr),
+			sharedKey = await CryptoStuff.get_dh_shared_key(
+				this.privateKey, 
+				publicKey
+			);
+		this.sharedKeys[username] = sharedKey;
+
+		return sharedKey;
+	}
+
+	async sendMessage(username, publicKeyStr, message){
+
+		let iv = await CryptoStuff.generate_iv(),
+			ivStr = CryptoStuff.arrayBufferToHex(iv),
+			publicKey = await CryptoStuff.importPublicKey_dh(publicKeyStr),
+			messageEncrypted = await CryptoStuff.encrypt(
+				message, 
+				this.sharedKeys[username], 
+				iv
+			);
+
+		this.socket.send(messageToStr(
+			this.username,
+			this.passwordHash,
+			username,
+			messageEncrypted,
+			ivStr
+		));
+	}
+
+	async receiveMessage(sender, recipient, messageEncrypted, encryption_iv, timestamp){
+		let friend = (sender == this.username) ? recipient : sender;
+
+		if (!this.friends.has(friend)){
+			let publicKey = (await waitForAjaxCall(
+				'GET',
+				`/getPublicKey/${this.username}
+				/passwordHash/${this.passwordHash}
+				/friend/${friend}`
+			)).publicKey;
+
+			this.addFriend(friend, publicKey);
+			return;
+		}
+
+		let iv = CryptoStuff.hexToArrayBuffer(encryption_iv),
+			messageDecrypted = await CryptoStuff.decrypt(
+				messageEncrypted, 
+				this.sharedKeys[friend], 
+				iv
+			),
+			messagesContainer = $(`#${friend}_messages`),
+			lastMessagePreview = $(`#${friend}_lastMessage`),
+			messageDisplay;
+
+		if (messageDecrypted.length < 20){ //too long for ternary op 
+			messageDisplay = messageDecrypted;
+		} else {
+			messageDisplay = `${messageDecrypted.substr(0,17)}...`;
+		}
+		let prefix = (sender == this.username) ? 'you' : friend
+
+		lastMessagePreview.html(prefix+': '+messageDisplay);
+
+		$(`#${friend}_lastMessageTime`).html(formatTime(timestamp));
+		
+		if (this.lazyLoadedMessagers.has(friend)){
+
+			let messageClass = (sender == this.username) ? 'from' : 'to';
+
+			messagesContainer.append(
+			 	`<div class='message ${messageClass}'>
+			 		<div class='messageSubContainer'>
+				 		<p class='actualMessage'>${messageDecrypted}</p>
+				 		<p class='date'>${formatTime(timestamp)}</p>
+			 		</div>
+			 	</div>`
+			);
+			this.scrollToBottom(friend);
+		}
+	}
+
+	async addFriend(username, publicKey){
+		this.friends.add(username);
+		await this.loadSharedKey(username, publicKey);
+
+    	// add friend to friendsList
+    	let friendPreview = $(`<div class='friendPreview'></div>`);
+    	$("#friendsList").append(friendPreview);
+		let friendButton = $(`<h3 class='friendButton'>${username}</h3>`);
+		friendPreview.append(friendButton);
+    	friendPreview.on('click', async () => {
+    		let friendMessenger = await this.lazyLoadMessenger(username, publicKey);
+    		showContainer(`${username}_messenger`);
+    	});
+    	let lastMessageContainer = (`<p id='${username}_lastMessage' class='lastMessage'></p>`);
+    	friendPreview.append(lastMessageContainer);
+    	let lastMessageTime = (`<p id='${username}_lastMessageTime' class='lastMessageTime'></p>`);
+    	friendPreview.append(lastMessageTime);
+
+    	let lastMessage = await waitForAjaxCall(
+    		'GET',
+    		`/getLastMessage/${this.username}
+    		/passwordHash/${this.passwordHash}
+    		/friend/${username}`
+    	);
+    	if (lastMessage){
+    		this.receiveMessage(
+    			lastMessage.sender,
+    			lastMessage.recipient,
+    			lastMessage.messageEncrypted,
+    			lastMessage.encryption_iv,
+    			lastMessage.timestamp
+    		);
+    	}
+	}
+
+	async setupConversations(){
+		let friends;
+		try {
+			friends = await waitForAjaxCall(
+				"GET", 
+				`/getFriends/${this.username}
+				/passwordHash/${this.passwordHash}`
+			);
+		} catch (e) { return; }
+
+	    for (let friend of friends){
+	    	this.addFriend(friend.username, friend.publicKey);
+	    }
+
+	    showContainer('homeContainer');
+
+	}
+
+	static async getMyKey(password){
+		return CryptoStuff.rawStringToKey(password); //TODO: encrypt with username?
+	}
+}
+
+class UserCreator{
+
+	static async sendUserToServer(username, passwordHash, publicKey, privateKeyEncrypted, encryption_iv){
+	    try {
+	    	await waitForAjaxCall('PUT', `
+	       		/register/${username}
+	       		/passwordHash/${passwordHash}
+	       		/publicKey/${publicKey}
+	       		/privateKeyEncrypted/${privateKeyEncrypted}
+	       		/encryption_iv/${encryption_iv}
+	    	`);
+	    	alert(`user: '${username}' created successfully!`);
+	    } catch (e) {
+	    	console.log('Server error:', e);
+	    }
+	}
+
+	static async makeUser(username, password){
+		let myPasswordHashed = await CryptoStuff.hash(password);
+
+		let myKeyPair = await CryptoStuff.generate_dh_keypair(),
+			myPrivateKey = myKeyPair.privateKey,
+			myPublicKey = myKeyPair.publicKey;
+		// messages will be sent diffie-hellman
+		// no one can decrypt messages sent to you without your private key
+
+		let myPrivateKeyStr = await CryptoStuff.exportPrivateKey(myPrivateKey),
+			myPublicKeyStr = await CryptoStuff.exportPublicKey(myPublicKey);
+
+		let myKey = await User.getMyKey(password),
+			iv = await CryptoStuff.generate_iv();
+		// myKey is an encryption key made from your password
+		// encryption is aes-gcm, so we need an iv. 
+
+		let ivStr = CryptoStuff.arrayBufferToHex(iv);
+		// The iv can be public: "...so the IV usually does not need to be secret." ~ Wikipedia
+
+		let myPrivateKeyEncrypted = await CryptoStuff.encrypt(myPrivateKeyStr, myKey, iv);
+		// encrypt the private key with myKey
+		// => no one can decrypt messages sent to you without your password
+
+		// the server doesn't know your password, as it only ever authenticates a hash of it
+		UserCreator.sendUserToServer(username, 
+			myPasswordHashed, 
+			myPublicKeyStr, 
+			myPrivateKeyEncrypted, 
+			ivStr
+		);
+	}
+}
+
+
+
+let register = document.querySelector('#register');
+$('#register').on('submit', (e) => {
+	e.preventDefault();
+
+	let username = $('#register input[name="username"]').val(),
+		password = $('#register input[name="password"]').val(),
+		password2 = $('#register input[name="password2"]').val()
+
+	if (password != password2){
+		alert('Error: passwords dissimilar.');
+		$('#register input[name="password2"]').html('');
+		return;
+	}
+	UserCreator.makeUser(
+		username,
+		password
+	);
+	return false;
+});
+
+
+$('#login').on('submit', async (e) => {
+	e.preventDefault();
+
+	let username = $('#login input[name="username"]').val(),
+		password = $('#login input[name="password"]').val();
+
+	try {
+		let passwordHash = await CryptoStuff.hash(password);
+
+		let userObj = JSON.parse(await waitForAjaxCall(
+			'GET', 
+			`login/${username}/passwordHash/${passwordHash}`
+		));
+
+		USER = new User(
+			username, 
+			password, 
+			userObj.privateKeyEncrypted, 
+			userObj.encryption_iv
+		);
+	} catch (e) {
+		console.log('Server error:', e);
+	}
+
+	return false;
+});
+
+
+
+</script>
+
+</body>
+
+
+</html>
+
+

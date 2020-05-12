@@ -1,0 +1,159 @@
+const enc = new TextEncoder(),
+	dec = new TextDecoder();
+
+class CryptoStuff {
+	//https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto
+
+	static async get_dh_keypair(){
+		return window.crypto.subtle.generateKey(
+			{
+		      name: "ECDH",
+		      namedCurve: "P-384"
+		    },
+		    true,
+		    ["deriveKey"]
+		);
+	}
+
+	static async generate_dh_shared_key(myPrivateKey, theirPublicKey){
+		return window.crypto.subtle.deriveKey(
+		    {
+		      name: "ECDH",
+		      public: theirPublicKey
+		    },
+		    myPrivateKey,
+		    {
+		    	name: "AES-GCM",
+		    	length: 256
+		    },
+		    true,
+		    ["encrypt", "decrypt"]
+		);
+	}
+
+	static async encrypt(decryptedMsg, key, iv){
+		// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt
+		// https://github.com/mdn/dom-examples/blob/master/web-crypto/derive-key/ecdh.js
+
+		let msg = enc.encode(decryptedMsg);
+		return window.crypto.subtle.encrypt(
+		    {
+	          name: "AES-GCM",
+	          iv: iv
+	        },
+		    key,
+		    msg
+	    );
+
+	}
+
+	static async decrypt(encryptedMsg, key, iv){
+		// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/decrypt
+		// https://github.com/mdn/dom-examples/blob/master/web-crypto/derive-key/ecdh.js
+		
+		try {
+			let decrypted = await window.crypto.subtle.decrypt(
+		        {
+		          name: "AES-GCM",
+		          iv: iv
+		        },
+		        key,
+		        encryptedMsg
+	        );
+	        return dec.decode(decrypted);
+
+	    } catch (e) {
+	    	alert('Error: decryption error.');
+	    }
+	}
+
+	static async hash(toHash){
+		// https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/digest
+		let msgUint8 = enc.encode(toHash),                        				  
+			hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8),
+			keyHex = CryptoStuff.arrayBufferToHex(hashBuffer);
+
+		return keyHex;
+	}
+
+	static arrayBufferToHex(arrayBuffer){
+		let intArray = new Uint8Array(arrayBuffer),
+			hashArray = Array.from(intArray),
+			hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+		return hashHex;
+	}
+
+	static hexToArrayBuffer(hex){
+		let array = []; 
+		for (let i=0; i<hex.length; i+=2){
+			let hexNum = hex.substring(i,i+2),
+				decimal = parseInt(hexNum, 16);
+
+			array.push(decimal);
+		}
+		let buffer = new Uint8Array(array).buffer;
+
+		return buffer;
+	}
+
+	static async dh_keyToString(key){
+		let keyBuffer = await window.crypto.subtle.exportKey(
+			    "raw",
+			    key
+			),
+			keyHex = CryptoStuff.arrayBufferToHex(keyBuffer);
+
+		return keyHex;
+	}
+
+	static async dh_stringToKey(keyHex){
+		let keyBuff = CryptoStuff.hexToArrayBuffer(keyHex);
+
+		return window.crypto.subtle.importKey(
+		    "raw",
+		    keyBuff,
+		    {
+		    	name: "ECDH",
+		    	namedCurve: "P-384"
+		    },
+		    true,
+		    []
+		);
+	}
+}
+
+async function test(){
+
+  let alicesKeyPair = await CryptoStuff.get_dh_keypair(),
+    alicesPublicKey = alicesKeyPair.publicKey,
+    alicesPrivateKey = alicesKeyPair.privateKey;
+
+  let bobsKeyPair = await CryptoStuff.get_dh_keypair(),
+    bobsPublicKey = bobsKeyPair.publicKey,
+    bobsPrivateKey = bobsKeyPair.privateKey;
+
+  let alicesPublicKeyExported = await CryptoStuff.dh_keyToString(alicesPublicKey),
+    alicesPublicKeyImported = await CryptoStuff.dh_stringToKey(alicesPublicKeyExported);
+
+  let bobsPublicKeyExported = await CryptoStuff.dh_keyToString(bobsPublicKey),
+    bobsPublicKeyImported = await CryptoStuff.dh_stringToKey(bobsPublicKeyExported);
+
+  let alicesSharedKey = await CryptoStuff.generate_dh_shared_key(alicesPrivateKey, bobsPublicKeyImported),
+    alicesSharedKeyStr = await CryptoStuff.dh_keyToString(alicesSharedKey);
+
+  let bobsSharedKey = await CryptoStuff.generate_dh_shared_key(bobsPrivateKey, alicesPublicKeyImported),
+    bobsSharedKeyStr = await CryptoStuff.dh_keyToString(bobsSharedKey);
+
+  console.log("Alice's shared key:", alicesSharedKeyStr, "\nBob's shared key:  ", bobsSharedKeyStr);
+  
+  alicesMsg = "Hello there Bob!";
+  iv = window.crypto.getRandomValues(new Uint8Array(12));
+
+  let alicesMsgEncrypted = await CryptoStuff.encrypt(alicesMsg, alicesSharedKey, iv); //encrypt with alice's key
+  let alicesMsgDecrypted = await CryptoStuff.decrypt(alicesMsgEncrypted, bobsSharedKey, iv); //decrypt with bob's key
+  console.log(alicesMsgDecrypted);
+
+}
+
+test();
