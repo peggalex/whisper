@@ -10,7 +10,7 @@
 		}
 
 		body *{
-			transition: background-color 1s, opacity 1s, color 1s;
+			transition: background-color 1s, opacity 1s, color 1s, box-shadow 1s;
 		}
 
 		.loginLike {
@@ -105,6 +105,8 @@
 		    /*border: solid;*/
 		    border-width: thin;
 		    padding: 10px;
+		    max-width: 50vw;
+			word-wrap: break-word;
 		}
 
 		div.messagesContainer{
@@ -266,18 +268,26 @@
 		    margin-bottom: 0px;
 		}
 
-		.onlineOffline {
+		.onlineOfflineContainer{
 			height: 0.5em;
 		    width: 0.5em;
 		    border-radius: 0.5em;
 		    margin-right: 0.5em;
 		    border: solid;
 		    border-width: thin;
-		    border-color: cornsilk;
+		    border-color: cornsilk;	
+		}
+
+		.onlineOffline {
+			height: 0.5em;
+		    width: 0.5em;
+		    border-radius: 0.5em;
+		    margin-right: 0.5em;
 		}
 
 		.onlineOffline.online {
 			background-color: lime;
+			box-shadow: 0px 0px 0.5em lime;
 		}
 
 		.onlineOffline.offline {
@@ -597,9 +607,26 @@ class Icons{
 	static logout = <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="sign-out-alt" className="icon svg-inline--fa fa-sign-out-alt fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M497 273L329 441c-15 15-41 4.5-41-17v-96H152c-13.3 0-24-10.7-24-24v-96c0-13.3 10.7-24 24-24h136V88c0-21.4 25.9-32 41-17l168 168c9.3 9.4 9.3 24.6 0 34zM192 436v-40c0-6.6-5.4-12-12-12H96c-17.7 0-32-14.3-32-32V160c0-17.7 14.3-32 32-32h84c6.6 0 12-5.4 12-12V76c0-6.6-5.4-12-12-12H96c-53 0-96 43-96 96v192c0 53 43 96 96 96h84c6.6 0 12-5.4 12-12z"></path></svg>
 }
 
+const SEND_SOUND = new Audio("sounds/send.wav");
+const RECEIVE_SOUND = new Audio("sounds/receive.wav");
+
+[SEND_SOUND, RECEIVE_SOUND].forEach((audio) => {
+	audio.volume = 0.5;
+	audio.preload = 'auto';
+});
+
+
+function playAudio(audio){
+	try {
+		audio.play();
+	} catch (err) {
+		console.log('cant play audio on this browser');
+	}
+}
+
 var TextBar = (props) => (
 	<div id={props.id} className='textBar'>
-		<input name='textBarInput' onChange={props.typingHandler}/>
+		<input name='textBarInput' onChange={props.typingHandler} required/>
 		<button onClick={props.clickHandler}>
 			{props.submitName}
 		</button>
@@ -803,7 +830,12 @@ class Friend{
 class OnlineNode extends React.Component{
 	render(props){
 		let onlineOfflineClass = (this.props.online) ? 'online' : 'offline';
-		return <div className={'onlineOffline ' + onlineOfflineClass}></div>
+		return (
+			<div className={'onlineOfflineContainer'}>
+				<div className={'onlineOffline ' + onlineOfflineClass}>
+				</div>
+			</div>
+		);
 	}
 }
 
@@ -1062,6 +1094,7 @@ class HomeComponent extends SuperHideableComponent{
 			message, 
 			this.messageSocket
 		);
+		playAudio(SEND_SOUND);
 	}
 
 	receiveMessage = async (sender, recipient, messageEncrypted, encryption_ivStr, timestamp) => {
@@ -1129,6 +1162,9 @@ class HomeComponent extends SuperHideableComponent{
 	    this.messageSocket.onmessage = async (event) => {
 	    	let message = messageStrToJSON(event.data);
 	    	console.log('received message:', message);
+	    	if (message.recipient == this.username){
+	    		playAudio(RECEIVE_SOUND);
+	    	}
 	    	this.receiveMessage(
 	    		message.sender,
 	    		message.recipient,
@@ -1233,6 +1269,26 @@ class HomeComponent extends SuperHideableComponent{
 		this.createMessageSocket();
 		this.createFriendRequestSocket();
 		this.createOnlineSocket();
+
+		let webSockets = [
+			this.friendSocket,
+			this.messageSocket,
+			this.friendRequestSocket,
+			this.onlineSocket
+		];
+
+		let close = () => {
+			alert('Error: Lost connection with server.');
+			this.props.logout();
+			webSockets.forEach((ws)=>{
+				ws.onclose = ()=>{};
+			});
+		}
+
+		webSockets.forEach((ws)=> {
+			ws.onclose = close;
+		});
+
 	}
 
 	logout = () => {
