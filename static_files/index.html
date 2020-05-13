@@ -2,7 +2,7 @@
 
 <head>
 	<title>Whisper</title>
-
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 	<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@200&display=swap" rel="stylesheet">
 	
 	<style>
@@ -315,6 +315,24 @@
 		    outline: none;
 		}
 
+		@media only screen and (max-width: 600px) {
+
+			html {
+				font-size: 24px;
+			}
+
+			#topbar{
+				flex-direction: column;
+			}
+
+			#topbar h1{
+				font-size: 1rem;
+			}
+
+			#topbar > div{
+				padding: 0.5rem;
+			}
+		}
 
 		@media only screen and (orientation: portrait) {
 			
